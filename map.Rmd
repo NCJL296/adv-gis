@@ -2,26 +2,15 @@
 title: "map"
 author: "Jennifer Laws"
 date: "December 4, 2015"
-output: html_document
+output:
+  html_document:
+    toc: yes
+    number_sections: yes
 ---
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+## Create Map of Points
 
 ```{r}
-summary(cars)
-```
-
-You can also embed plots, for example:
-
-```{r, echo=FALSE}
-plot(cars)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
-## Create Map of Points
 # load packages
 suppressWarnings(suppressPackageStartupMessages({
   library(leaflet)
@@ -41,33 +30,49 @@ pts_gcs = spTransform(pts, leaflet:::epsg4326)
 leaflet() %>%
   addTiles() %>%
   addMarkers(data = pts_gcs) 
-  
-# create map with popups
+```
+
+
+# Create map with popups
+
+```{r}
 leaflet() %>%
   addTiles() %>%
   addMarkers(data = pts_gcs, popup=~sprintf('id: %d', id)) 
+```
 
-# create map with Stamen.Watercolor basemap
+# Create map with Stamen.Watercolor basemap
+
+```{r}
 leaflet() %>%  
   addProviderTiles('Stamen.Watercolor') %>%
   addMarkers(data = pts_gcs, popup=~sprintf('id: %d', id))
+```
 
-# create map with Stamen.Toner basemap
+# Create map with Stamen.Toner basemap
+
+```{r}
 leaflet() %>%  
   addProviderTiles('Stamen.Toner') %>%
   addMarkers(data = pts_gcs, popup=~sprintf('id: %d', id))
+```
 
-# create map with Thunderforest.TransportDark basemap
+# Create map with Thunderforest.TransportDark basemap
+
+```{r}
 leaflet() %>%  
   addProviderTiles('Thunderforest.TransportDark') %>%
   addMarkers(data = pts_gcs, popup=~sprintf('id: %d', id))
 
-# read points, lines and polygons from geodatabase
+# Read points, lines and polygons from geodatabase
 pts_gcs  = readOGR(gdb, 'pts_tree', verbose=F)    %>% spTransform(leaflet:::epsg4326)
 lns_gcs  = readOGR(gdb, 'lns_cart', verbose=F)    %>% spTransform(leaflet:::epsg4326)
 plys_gcs = readOGR(gdb, 'plys_bunker', verbose=F) %>% spTransform(leaflet:::epsg4326)
+```
 
-# map with lines and polygons
+# Map with lines and polygons
+
+```{r}
 leaflet() %>%  
   addProviderTiles('Thunderforest.TransportDark') %>%
   addPolygons(data=plys_gcs, color = "yellow", stroke = FALSE) %>%  
@@ -76,16 +81,19 @@ leaflet() %>%
 
 library(raster)
 
-# set path to your final chosen classified image
+# Set path to your final chosen classified image
 tif = 'H:/Advanced_GIS/Lab3New/lab3/images_rect/vid_sec279_5.tif'
   
-# read raster, presumably in Web Mercator
+# Read raster, presumably in Web Mercator
 r = raster(tif, crs = leaflet:::epsg3857)
 
-# setup color palette
+# Setup color palette
 pal = colorFactor('Set3', values(r), na.color='transparent')
+```
 
-# map with raster
+# Map with raster
+
+```{r}
 leaflet() %>%  
   addProviderTiles('Thunderforest.TransportDark') %>%
   addRasterImage(r, colors=pal, project=F, opacity = 0.7) %>%
@@ -96,7 +104,7 @@ library(rgdal)
 gdb = 'H:/Advanced_GIS/Lab3New/lab3/golf.gdb'
 dir = 'H:/Advanced_GIS/Lab5/lab5_online/adv-gis/data'
 
-# iterate through features in geodatabase
+# Iterate through features in geodatabase
 for (fc in ogrListLayers(gdb)){
   
   # print paths
@@ -113,4 +121,4 @@ for (fc in ogrListLayers(gdb)){
   # move file
   file.rename(tmp, geo)
 }
-
+```
