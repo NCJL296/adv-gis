@@ -1,6 +1,6 @@
 ---
 title: "map"
-author: "Jennifer Laws"
+author: "Natalie Cochran and Jennifer Laws"
 date: "December 4, 2015"
 output:
   html_document:
